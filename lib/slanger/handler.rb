@@ -37,22 +37,20 @@ module Slanger
       elsif respond_to? event, true
         send event, msg
       end
-
     rescue JSON::ParserError
       error({ code: 5001, message: "Invalid JSON" })
     rescue Exception => e
-      error({ code: 500, message: "#{e.message}\n #{e.backtrace.join "\n"}" })
+      puts "Error: #{e.message}\n#{e.backtrace.join("\n")}"
+      error({ code: 500, message: "Internal Error" })
     end
 
     def onclose
-
       subscriptions = @subscriptions.select { |k,v| k && v }
       
       subscriptions.each_key do |channel_id|
         subscription_id = subscriptions[channel_id]
         Channel.unsubscribe channel_id, subscription_id
       end
-
     end
 
     def authenticate
