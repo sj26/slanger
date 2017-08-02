@@ -2,6 +2,8 @@
 
 module Slanger
   module Config
+    extend self
+
     def load(opts={})
       options.update opts
     end
@@ -21,7 +23,5 @@ module Slanger
     def method_missing(meth, *args, &blk)
       options[meth]
     end
-
-    extend self
   end
 end
