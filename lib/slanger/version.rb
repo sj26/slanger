@@ -1,3 +1,3 @@
 module Slanger
-  VERSION = '0.6.0.bump'
+  VERSION = '0.6.0.sj26.2'
 end
