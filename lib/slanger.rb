@@ -14,10 +14,10 @@ when EM.kqueue? then EM.kqueue
 end
 
 require 'slanger/api'
+require 'slanger/api/application'
 require 'slanger/api/event'
 require 'slanger/api/event_publisher'
 require 'slanger/api/request_validation'
-require 'slanger/api/server'
 require 'slanger/channel'
 require 'slanger/config'
 require 'slanger/connection'

@@ -12,7 +12,7 @@ require 'oj'
 
 module Slanger
   module Api
-    class Server < Sinatra::Base
+    class Application < Sinatra::Base
       use Rack::FiberPool
       set :raise_errors, lambda { false }
       set :show_exceptions, false
