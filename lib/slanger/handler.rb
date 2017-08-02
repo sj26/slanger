@@ -10,7 +10,6 @@ require "oj"
 
 module Slanger
   class Handler
-
     attr_accessor :connection
     delegate :error, :send_payload, to: :connection
 
@@ -42,10 +41,10 @@ module Slanger
       when "pusher:unsubscribe"
         pusher_unsubscribe(msg)
       end
-    rescue JSON::ParserError
+    rescue JSON::ParserError, Oj::ParseError
       error({ code: 5001, message: "Invalid JSON" })
     rescue Exception => e
-      puts "Error: #{e.message}\n#{e.backtrace.join("\n")}"
+      puts "Error: #{e.class.name}: #{e.message}\n#{e.backtrace.join("\n")}"
       error({ code: 500, message: "Internal Error" })
     end
 
