@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'lib/slanger/webhook'
 
 describe 'Slanger::Webhook' do
 

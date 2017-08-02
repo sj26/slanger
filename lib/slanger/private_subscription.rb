@@ -1,3 +1,5 @@
+require 'slanger/subscription'
+
 module Slanger
   class PrivateSubscription < Subscription
     def subscribe

@@ -1,3 +1,5 @@
+require 'slanger/subscription'
+
 module Slanger
   class PresenceSubscription < Subscription
     def subscribe

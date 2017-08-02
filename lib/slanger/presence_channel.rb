@@ -10,6 +10,8 @@ require 'forwardable'
 require 'fiber'
 require 'oj'
 
+require 'slanger/channel'
+
 module Slanger
   class PresenceChannel < Channel
     def_delegators :channel, :push
