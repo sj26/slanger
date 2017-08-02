@@ -2,29 +2,44 @@
 # Interface with Redis.
 
 require 'em-hiredis'
-require 'forwardable'
 require 'oj'
 
 module Slanger
   module Redis
-    extend Forwardable
+    extend self
 
-    def_delegator  :publisher, :publish
-    def_delegators :subscriber, :subscribe
-    def_delegators :regular_connection, :hgetall, :hdel, :hset, :hincrby
+    def hgetall(*args)
+      connection.hgetall(*args)
+    end
+
+    def hdel(*args)
+      connection.hdel(*args)
+    end
+
+    def hset(*args)
+      connection.hset(*args)
+    end
+
+    def hincrby(*args)
+      connection.hincrby(*args)
+    end
+
+    def publish(*args)
+      connection.publish(*args)
+    end
+
+    def subscribe(*args, &block)
+      pubsub_connection.subscribe(*args, &block)
+    end
 
     private
 
-    def regular_connection
-      @regular_connection ||= new_connection
+    def connection
+      @connection ||= new_connection
     end
 
-    def publisher
-      @publisher ||= new_connection
-    end
-
-    def subscriber
-      @subscriber ||= new_connection.pubsub.tap do |c|
+    def pubsub_connection
+      @pubsub_connection ||= new_connection.pubsub.tap do |c|
         c.on(:message) do |channel, message|
           message = Oj.load(message)
           c = Channel.from message['channel']
@@ -33,10 +48,10 @@ module Slanger
       end
     end
 
+    private
+
     def new_connection
       EM::Hiredis.connect Slanger::Config.redis_address
     end
-
-    extend self
   end
 end
