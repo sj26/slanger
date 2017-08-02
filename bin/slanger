@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+ENV["RACK_ENV"] ||= "production"
+
 require 'optparse'
 require 'eventmachine'
 require 'yaml'
@@ -14,6 +16,10 @@ OptionParser.new do |opts|
   opts.on '-h', '--help', 'Display this screen' do
     puts opts
     exit
+  end
+
+  opts.on '-e', '--environment ENVIRONMENT', "Rack environment. Defaults to production." do |k|
+    ENV["RACK_ENV"] = k
   end
 
   opts.on '-k', '--app_key APP_KEY', "Pusher application key. This parameter is required on command line or in optional config file." do |k|
