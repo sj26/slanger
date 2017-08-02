@@ -1,6 +1,7 @@
 # Redis class.
 # Interface with Redis.
 
+require 'em-hiredis'
 require 'forwardable'
 require 'oj'
 

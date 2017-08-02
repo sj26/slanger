@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require 'eventmachine'
-require 'em-hiredis'
 require 'rack'
 
 require 'slanger/version'
