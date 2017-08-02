@@ -114,8 +114,7 @@ EM.run do
 
   Slanger::Service.run
 
-  puts "\n"
-  puts "\n"
+  puts
   puts "    .d8888b.  888                                               "
   puts "   d88P  Y88b 888                                               "
   puts "   Y88b.      888                                               "
@@ -127,11 +126,9 @@ EM.run do
   puts "                                         888                    "
   puts "                                    Y8b d88P                    "
   puts '                                    "Y88P"                      '
-  puts "\n" * 2
-
+  puts
   puts "Running Slanger v.#{Slanger::VERSION}"
-  puts "\n"
-
+  puts
   puts "Slanger API server listening on port #{Slanger::Config.api_port}"
   puts "Slanger WebSocket server listening on port #{Slanger::Config.websocket_port}"
 end
