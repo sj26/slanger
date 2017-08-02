@@ -1,12 +1,12 @@
 # Handler class.
 # Handles a client connected via a websocket connection.
 
-require 'active_support/core_ext/hash'
-require 'securerandom'
-require 'signature'
-require 'fiber'
-require 'rack'
-require 'oj'
+require "active_support/core_ext/hash"
+require "securerandom"
+require "signature"
+require "fiber"
+require "rack"
+require "oj"
 
 module Slanger
   class Handler
@@ -27,15 +27,20 @@ module Slanger
     def onmessage(msg)
       msg = Oj.load(msg)
 
-      msg['data'] = Oj.load(msg['data']) if msg['data'].is_a? String
+      msg["data"] = Oj.load(msg["data"]) if msg["data"].is_a? String
 
-      event = msg['event'].gsub(/\Apusher:/, 'pusher_')
-
-      if event =~ /\Aclient-/
-        msg['socket_id'] = connection.socket_id
-        Channel.send_client_message msg
-      elsif respond_to? event, true
-        send event, msg
+      case msg["event"]
+      when /\Aclient-/
+        msg["socket_id"] = connection.socket_id
+        Channel.send_client_message(msg)
+      when "pusher:ping"
+        pusher_ping(msg)
+      when "pusher:pong"
+        pusher_pong(msg)
+      when "pusher:subscribe"
+        pusher_subscribe(msg)
+      when "pusher:unsubscribe"
+        pusher_unsubscribe(msg)
       end
     rescue JSON::ParserError
       error({ code: 5001, message: "Invalid JSON" })
@@ -70,14 +75,15 @@ module Slanger
     end
 
     def pusher_ping(msg)
-      send_payload nil, 'pusher:pong'
+      send_payload nil, "pusher:pong"
     end
 
-    def pusher_pong msg; end
+    def pusher_pong(msg)
+    end
 
     def pusher_subscribe(msg)
-      channel_id = msg['data']['channel']
-      klass      = subscription_klass channel_id
+      channel_id = msg["data"]["channel"]
+      klass      = subscription_klass(channel_id)
 
       if @subscriptions[channel_id]
         error({ code: nil, message: "Existing subscription to #{channel_id}" })
@@ -87,7 +93,7 @@ module Slanger
     end
 
     def pusher_unsubscribe(msg)
-      channel_id      = msg['data']['channel']
+      channel_id      = msg["data"]["channel"]
       subscription_id = @subscriptions.delete(channel_id)
 
       Channel.unsubscribe channel_id, subscription_id
@@ -108,12 +114,15 @@ module Slanger
       Slanger::Config.app_key == app_key
     end
 
-    def subscription_klass channel_id
-      klass = channel_id.match(/\A(private|presence)-/) do |match|
-        Slanger.const_get "#{match[1]}_subscription".classify
+    def subscription_klass(channel_id)
+      case channel_id
+      when /\Aprivate-/
+        Slanger::PrivateSubscription
+      when /\Apresence-/
+        Slanger::PresenceSubscription
+      else
+        Slanger::Subscription
       end
-
-      klass || Slanger::Subscription
     end
   end
 end
