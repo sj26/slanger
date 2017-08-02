@@ -17,7 +17,7 @@ module Slanger
       set :raise_errors, lambda { false }
       set :show_exceptions, false
 
-      error(Signature::AuthenticationError) { |e| halt 401, "401 UNAUTHORIZED" }
+      error(Signature::AuthenticationError) { |e| halt 401, "401 Unauthorized" }
       error(Slanger::Api::InvalidRequest)   { |c| halt 400, "400 Bad Request" }
 
       before do
