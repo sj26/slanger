@@ -6,11 +6,6 @@ module Slanger
     extend self
 
     def run
-      case
-      when EM.epoll?  then EM.epoll
-      when EM.kqueue? then EM.kqueue
-      end
-
       options = {
         host:    Slanger::Config[:websocket_host],
         port:    Slanger::Config[:websocket_port],

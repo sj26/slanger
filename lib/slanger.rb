@@ -8,11 +8,6 @@ require 'slanger/version'
 
 module Slanger; end
 
-case
-when EM.epoll?  then EM.epoll
-when EM.kqueue? then EM.kqueue
-end
-
 require 'slanger/api'
 require 'slanger/api/application'
 require 'slanger/api/event'
