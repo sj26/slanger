@@ -1,25 +1,30 @@
-require 'thin'
-require 'rack'
+require "slanger/config"
+require "slanger/api/server"
+require "slanger/web_socket_server"
 
 module Slanger
   module Service
+    extend self
+
     def run
       Slanger::Config[:require].each { |f| require f }
-      Thin::Logging.silent = true unless Slanger::Config.debug
-      Rack::Handler::Thin.run(Slanger::Api::Server, Host: Slanger::Config.api_host, Port: Slanger::Config.api_port) do |server|
-        if Slanger::Config[:tls_options]
-          server.ssl = true
-          server.ssl_options = Slanger::Config[:tls_options]
-        end
-      end
+
+      Signal.trap('HUP') { stop }
+      Signal.trap('INT') { stop }
+      Signal.trap('QUIT') { stop }
+      Signal.trap('TERM') { stop }
+
+      Slanger::Api::Server.run
       Slanger::WebSocketServer.run
     end
 
     def stop
+      puts "Stopping"
+
+      Slanger::Api::Server.stop
+      Slanger::WebSocketServer.stop
+
       EM.stop if EM.reactor_running?
     end
-
-    extend self
-    Signal.trap('HUP') { Slanger::Service.stop }
   end
 end
