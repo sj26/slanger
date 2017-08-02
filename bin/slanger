@@ -6,8 +6,9 @@ require 'eventmachine'
 require 'yaml'
 require 'active_support/core_ext/hash'
 
-options = {}
+require 'slanger'
 
+options = {}
 
 OptionParser.new do |opts|
   opts.on '-h', '--help', 'Display this screen' do
@@ -84,9 +85,7 @@ OptionParser.new do |opts|
       exit
     end
   end
-
 end
-
 
 
 if options[:tls_options]
@@ -104,7 +103,6 @@ when EM.kqueue? then EM.kqueue
 end
 
 EM.run do
-  File.tap { |f| require f.expand_path(f.join(f.dirname(__FILE__),'..', 'slanger.rb')) }
   Slanger::Config.load options
 
   # Write PID to file
