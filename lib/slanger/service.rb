@@ -9,6 +9,10 @@ module Slanger
     def run
       Slanger::Config[:require].each { |f| require f }
 
+      if Slanger::Config.statsd
+        Slanger::Statsd.configure
+      end
+
       Signal.trap('HUP') { stop }
       Signal.trap('INT') { stop }
       Signal.trap('QUIT') { stop }

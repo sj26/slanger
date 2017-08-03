@@ -6,7 +6,7 @@ module Slanger
       return handle_invalid_signature if invalid_signature?
 
       unless channel_data?
-        return connection.error({
+        return connection.send_error({
           message: "presence-channel is a presence channel and subscription must include channel_data"
         })
       end

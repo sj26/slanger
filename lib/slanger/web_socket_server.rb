@@ -19,12 +19,11 @@ module Slanger
       end
 
       EM::WebSocket.run(options) do |connection|
-        # Keep track of handler instance in instance of EM::Connection to ensure a unique handler instance is used per connection.
-        connection.class_eval { attr_accessor :connection_handler }
-        # Delegate connection management to handler instance.
-        connection.onopen { |handshake| connection.connection_handler = Slanger::Config.socket_handler.new connection, handshake }
-        connection.onmessage { |msg| connection.connection_handler.onmessage msg }
-        connection.onclose { connection.connection_handler.onclose }
+        handler = Slanger::Config.socket_handler.new(connection)
+
+        connection.onopen(&handler.method(:onopen))
+        connection.onmessage(&handler.method(:onmessage))
+        connection.onclose(&handler.method(:onclose))
       end
     end
 

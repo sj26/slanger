@@ -14,11 +14,9 @@ module Slanger
       private
 
       def publish_event(channel_id)
+        Slanger::Statsd.increment("messages")
         Slanger::Redis.publish(channel_id, event.payload(channel_id))
       end
-
     end
   end
 end
-
-

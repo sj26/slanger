@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency                "eventmachine",     "~> 1.0"
   s.add_dependency                "em-hiredis",       "~> 0.2"
+  s.add_dependency                "em-http-request",  "~> 0.3"
   s.add_dependency                "em-websocket",     "~> 0.5"
   s.add_dependency                "rack",             "~> 1.4"
   s.add_dependency                "rack-fiber_pool",  "~> 0.9"
@@ -29,7 +30,6 @@ Gem::Specification.new do |s|
   s.add_dependency                "activesupport",    "~> 4.2"
   s.add_dependency                "sinatra",          "~> 1.4"
   s.add_dependency                "thin",             "~> 1.6"
-  s.add_dependency                "em-http-request",  "~> 0.3"
   s.add_dependency                "oj",               "~> 2.18"
 
   s.add_development_dependency    "rspec",            "~> 3.6"
@@ -42,4 +42,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency    "pry-byebug",       "~> 2.0"
   s.add_development_dependency    "bundler",          "~> 1.5"
   s.add_development_dependency    "rake",             "~> 10.4"
+  s.add_development_dependency    "statsd-ruby",      "~> 1.0"
 end

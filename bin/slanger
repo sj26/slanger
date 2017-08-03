@@ -77,6 +77,21 @@ OptionParser.new do |opts|
     options[:pid_file] = k
   end
 
+  opts.on '--[no-]statsd', 'Emit stats to statsd' do |value|
+    options[:statsd] = value
+  end
+
+  opts.on '--statsd_host HOST', 'Statsd address (Default: 127.0.0.1:9125)' do |value|
+    host, port = value.split(":", 2)
+
+    options[:statsd_host] = host
+    options[:statsd_port] = port.to_i
+  end
+
+  opts.on '--statsd_namespace NAMESPACE', 'Statsd namspace to prefix all stats (Default: slanger)' do |value|
+    options[:statsd_namespace] = value
+  end
+
   opts.parse!
 
   if options[:config_file] and File.exists? options[:config_file]
@@ -92,7 +107,6 @@ OptionParser.new do |opts|
     end
   end
 end
-
 
 if options[:tls_options]
   [:cert_chain_file, :private_key_file].each do |param|
@@ -133,6 +147,9 @@ EM.run do
   puts
   puts "Running Slanger v.#{Slanger::VERSION}"
   puts
-  puts "Slanger API server listening on port #{Slanger::Config.api_port}"
-  puts "Slanger WebSocket server listening on port #{Slanger::Config.websocket_port}"
+  puts "Slanger API server listening on #{Slanger::Config.api_host}:#{Slanger::Config.api_port}"
+  puts "Slanger WebSocket server listening on #{Slanger::Config.websocket_host}:#{Slanger::Config.websocket_port}"
+  if Slanger::Config.statsd
+    puts "Sending stats to Statsd on #{Slanger::Config.statsd_host}:#{Slanger::Config.statsd_port}"
+  end
 end
